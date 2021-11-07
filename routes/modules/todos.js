@@ -31,7 +31,7 @@ router.get('/:id', (req, res) => {
 router.get('/:id/edit', (req, res) => {
   const UserId = req.user.id
   const id = req.params.id
-  return Todo.findOne({ id, UserId })
+  return Todo.findOne({ where: { UserId, id } })
     .then(todo => res.render('edit', { todo: todo.toJSON() }))
     .catch(error => console.log(error))
 })
@@ -41,13 +41,22 @@ router.put('/:id', (req, res) => {
   const UserId = req.user.id
   const id = req.params.id
   const { name, isDone } = req.body //解構賦值
-  return Todo.findOne({ id, UserId })
+  return Todo.findOne({ where: { UserId, id } })
     .then(todo => {
       todo.name = name
       todo.isDone = isDone === 'on'
       return todo.save()
     })
     .then(() => res.redirect(`/todos/${id}`))
+    .catch(error => console.log(error))
+})
+
+//Route: delete todo data
+router.delete('/:id', (req, res) => {
+  const UserId = req.user.id
+  const id = req.params.id
+  return Todo.destroy({ where: { UserId, id } })
+    .then(() => res.redirect('/'))
     .catch(error => console.log(error))
 })
 
