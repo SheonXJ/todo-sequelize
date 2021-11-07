@@ -19,9 +19,19 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }))
+// 用 app.use 規定每一筆請求都需要透過 body-parser 進行前置處理
 app.use(express.urlencoded({ extended: true }))
+// Setting method-override 路由覆蓋機制
 app.use(methodOverride('_method'))
+// Setting Passport
 usePassport(app)
+// Setting get user data & authenticated state to hbs
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.isAuthenticated
+  res.locals.user = req.user
+  next()
+})
+// 將 request 導入路由器
 app.use(routes)
 
 app.listen(PORT, () => {
