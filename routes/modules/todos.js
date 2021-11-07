@@ -19,7 +19,7 @@ router.post('/', (req, res) => {
     .catch(error => console.log(error))
 })
 
-//Route: show edit page
+//Route: show detail page
 router.get('/:id', (req, res) => {
   const id = req.params.id
   return Todo.findByPk(id)
@@ -27,7 +27,29 @@ router.get('/:id', (req, res) => {
     .catch(error => console.log(error))
 })
 
+//Route: show edit page
+router.get('/:id/edit', (req, res) => {
+  const UserId = req.user.id
+  const id = req.params.id
+  return Todo.findOne({ id, UserId })
+    .then(todo => res.render('edit', { todo: todo.toJSON() }))
+    .catch(error => console.log(error))
+})
 
+//Route: save edit data
+router.put('/:id', (req, res) => {
+  const UserId = req.user.id
+  const id = req.params.id
+  const { name, isDone } = req.body //解構賦值
+  return Todo.findOne({ id, UserId })
+    .then(todo => {
+      todo.name = name
+      todo.isDone = isDone === 'on'
+      return todo.save()
+    })
+    .then(() => res.redirect(`/todos/${id}`))
+    .catch(error => console.log(error))
+})
 
 // 匯出路由模組
 module.exports = router
