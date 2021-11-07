@@ -2,6 +2,7 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
+const bcrypt = require('bcryptjs')
 // 引用 User model
 const db = require('../../models')
 const User = db.User
@@ -46,7 +47,9 @@ router.post('/register', (req, res) => {
 })
 
 router.get('/logout', (req, res) => {
-  res.send('logout')
+  req.logout()
+  console.log('你已經成功登出。')
+  res.redirect('/users/login')
 })
 
 // 匯出路由模組
