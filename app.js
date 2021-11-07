@@ -3,6 +3,7 @@ const exphbs = require('express-handlebars')
 // const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 const session = require('express-session')
+const flash = require('connect-flash')
 
 const routes = require('./routes')
 const usePassport = require('./config/passport')
@@ -23,12 +24,17 @@ app.use(session({
 app.use(express.urlencoded({ extended: true }))
 // Setting method-override 路由覆蓋機制
 app.use(methodOverride('_method'))
+//Setting flash
+app.use(flash())
 // Setting Passport
 usePassport(app)
 // Setting get user data & authenticated state to hbs
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.isAuthenticated
   res.locals.user = req.user
+  // get flash to message.hbs
+  res.locals.success_msg = req.flash('success_msg')
+  res.locals.warning_msg = req.flash('warning_msg')
   next()
 })
 // 將 request 導入路由器
