@@ -7,7 +7,9 @@ const Todo = db.Todo
 
 // 定義首頁路由
 router.get('/', (req, res) => {
+  const UserId = req.user.id
   return Todo.findAll({
+    where: {UserId},
     raw: true,
     nest: true
   })
