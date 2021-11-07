@@ -8,8 +8,10 @@ const { authenticator } = require('../middleware/auth')
 const home = require('./modules/home')
 const users = require('./modules/users')
 const todos = require('./modules/todos')
+const auth = require('./modules/auth')
 
-// 將網址結構符合 / 字串的 request 導向 home 模組 
+// 將網址結構符合 / 字串的 request 導向 home 模組
+router.use('/auth', auth)
 router.use('/users', users)
 router.use('/todos', authenticator, todos)
 router.use('/', authenticator, home)
